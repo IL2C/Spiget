@@ -504,4 +504,9 @@ public class ResourceBuilder {
 
         return Optional.of(versionList);
     }
+
+    public Optional<Version> getLatestResourceVersion(int id) {
+        return webBuilder.getResponse("resources/" + id + "/versions/latest")
+                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Version.class));
+    }
 }
