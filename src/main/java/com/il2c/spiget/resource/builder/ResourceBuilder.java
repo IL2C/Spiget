@@ -425,4 +425,41 @@ public class ResourceBuilder {
 
         return Optional.of(updateList);
     }
+
+    public Optional<Update> getLatestResourceUpdate(int id) {
+        return getLatestResourceUpdate(id, 0, 0, null);
+    }
+
+    public Optional<Update> getLatestResourceUpdate(int id, SortOrder sort) {
+        return getLatestResourceUpdate(id, 0, 0, sort);
+    }
+
+    public Optional<Update> getLatestResourceUpdate(int id, String... fields) {
+        return getLatestResourceUpdate(id, 0, 0, null, fields);
+    }
+
+    public Optional<Update> getLatestResourceUpdate(int id, int size, int page) {
+        return getLatestResourceUpdate(id, size, page, null);
+    }
+
+    public Optional<Update> getLatestResourceUpdate(int id, SortOrder sort, String... fields) {
+        return getLatestResourceUpdate(id, 0, 0, sort, fields);
+    }
+
+    public Optional<Update> getLatestResourceUpdate(int id, int size, int page, SortOrder sort,
+                                                    String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement =
+                webBuilder.getResponse("resources/" + id + "/updates/latest" + parameters).orElse(null);
+
+        return jsonElement != null ? Optional.of(webBuilder.getGson().fromJson(jsonElement, Update.class)) :
+               Optional.empty();
+    }
 }
