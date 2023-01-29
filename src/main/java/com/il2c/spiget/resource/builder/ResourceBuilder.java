@@ -477,4 +477,9 @@ public class ResourceBuilder {
         return webBuilder.getResponse("resources/" + id + "/versions/latest")
                          .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Version.class));
     }
+
+    public Optional<Version> getResourceVersion(int resourceID, int versionID) {
+        return webBuilder.getResponse("resources/" + resourceID + "/versions/" + versionID)
+                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Version.class));
+    }
 }
