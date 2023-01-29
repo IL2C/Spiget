@@ -2,6 +2,7 @@ package com.il2c.spiget;
 
 import com.il2c.spiget.api.builder.APIBuilder;
 import com.il2c.spiget.author.builder.AuthorBuilder;
+import com.il2c.spiget.category.builder.CategoryBuilder;
 import com.il2c.spiget.web.builder.WebBuilder;
 
 public class SpigetAPI {
@@ -10,6 +11,7 @@ public class SpigetAPI {
 
     private APIBuilder apiBuilder;
     private AuthorBuilder authorBuilder;
+    private CategoryBuilder categoryBuilder;
 
     public SpigetAPI() {
         this.webBuilder = new WebBuilder();
@@ -33,5 +35,13 @@ public class SpigetAPI {
         }
 
         return authorBuilder;
+    }
+
+    public CategoryBuilder getCategoryBuilder() {
+        if (categoryBuilder == null) {
+            categoryBuilder = new CategoryBuilder(this);
+        }
+
+        return categoryBuilder;
     }
 }
