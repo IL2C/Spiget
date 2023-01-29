@@ -187,4 +187,134 @@ public class ResourceBuilder {
                Optional.of(webBuilder.getGson().fromJson(jsonElement, ResourcesForVersion.class)) :
                Optional.empty();
     }
+
+    public Optional<List<Resource>> getFreeResources() {
+        return getFreeResources(0, 0, null);
+    }
+
+    public Optional<List<Resource>> getFreeResources(SortOrder sort) {
+        return getFreeResources(0, 0, sort);
+    }
+
+    public Optional<List<Resource>> getFreeResources(String... fields) {
+        return getFreeResources(0, 0, null, fields);
+    }
+
+    public Optional<List<Resource>> getFreeResources(int size, int page) {
+        return getFreeResources(size, page, null);
+    }
+
+    public Optional<List<Resource>> getFreeResources(SortOrder sort, String... fields) {
+        return getFreeResources(0, 0, sort, fields);
+    }
+
+    public Optional<List<Resource>> getFreeResources(int size, int page, SortOrder sort, String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement = webBuilder.getResponse("resources/free" + parameters).orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Resource> resourceList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList().forEach(
+                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+
+        return Optional.of(resourceList);
+    }
+
+    public Optional<List<Resource>> getNewResources() {
+        return getNewResources(0, 0, null);
+    }
+
+    public Optional<List<Resource>> getNewResources(SortOrder sort) {
+        return getNewResources(0, 0, sort);
+    }
+
+    public Optional<List<Resource>> getNewResources(String... fields) {
+        return getNewResources(0, 0, null, fields);
+    }
+
+    public Optional<List<Resource>> getNewResources(int size, int page) {
+        return getNewResources(size, page, null);
+    }
+
+    public Optional<List<Resource>> getNewResources(SortOrder sort, String... fields) {
+        return getNewResources(0, 0, sort, fields);
+    }
+
+    public Optional<List<Resource>> getNewResources(int size, int page, SortOrder sort, String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement = webBuilder.getResponse("resources/new" + parameters).orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Resource> resourceList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList().forEach(
+                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+
+        return Optional.of(resourceList);
+    }
+
+    public Optional<List<Resource>> getPremiumResources() {
+        return getPremiumResources(0, 0, null);
+    }
+
+    public Optional<List<Resource>> getPremiumResources(SortOrder sort) {
+        return getPremiumResources(0, 0, sort);
+    }
+
+    public Optional<List<Resource>> getPremiumResources(String... fields) {
+        return getPremiumResources(0, 0, null, fields);
+    }
+
+    public Optional<List<Resource>> getPremiumResources(int size, int page) {
+        return getPremiumResources(size, page, null);
+    }
+
+    public Optional<List<Resource>> getPremiumResources(SortOrder sort, String... fields) {
+        return getPremiumResources(0, 0, sort, fields);
+    }
+
+    public Optional<List<Resource>> getPremiumResources(int size, int page, SortOrder sort,
+                                                        String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement = webBuilder.getResponse("resources/premium" + parameters).orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Resource> resourceList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList().forEach(
+                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+
+        return Optional.of(resourceList);
+    }
 }
