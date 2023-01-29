@@ -4,6 +4,7 @@ import com.il2c.spiget.api.builder.APIBuilder;
 import com.il2c.spiget.author.builder.AuthorBuilder;
 import com.il2c.spiget.category.builder.CategoryBuilder;
 import com.il2c.spiget.resource.builder.ResourceBuilder;
+import com.il2c.spiget.search.builder.SearchBuilder;
 import com.il2c.spiget.web.builder.WebBuilder;
 
 public class SpigetAPI {
@@ -14,6 +15,7 @@ public class SpigetAPI {
     private AuthorBuilder authorBuilder;
     private CategoryBuilder categoryBuilder;
     private ResourceBuilder resourceBuilder;
+    private SearchBuilder searchBuilder;
 
     public SpigetAPI() {
         this.webBuilder = new WebBuilder();
@@ -53,5 +55,13 @@ public class SpigetAPI {
         }
 
         return resourceBuilder;
+    }
+
+    public SearchBuilder getSearchBuilder() {
+        if (searchBuilder == null) {
+            searchBuilder = new SearchBuilder(this);
+        }
+
+        return searchBuilder;
     }
 }

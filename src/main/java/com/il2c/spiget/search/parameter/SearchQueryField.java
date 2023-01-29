@@ -1,4 +1,4 @@
-package com.il2c.spiget.author.parameter;
+package com.il2c.spiget.search.parameter;
 
 public enum SearchQueryField {
 
