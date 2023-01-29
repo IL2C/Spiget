@@ -23,27 +23,27 @@ public class AuthorBuilder {
         this.webBuilder = api.getWebBuilder();
     }
 
-    public Optional<List<Author>> getAuthorsList() {
-        return getAuthorsList(0, 0, null);
+    public Optional<List<Author>> getAuthors() {
+        return getAuthors(0, 0, null);
     }
 
-    public Optional<List<Author>> getAuthorsList(SortOrder sort) {
-        return getAuthorsList(0, 0, sort);
+    public Optional<List<Author>> getAuthors(SortOrder sort) {
+        return getAuthors(0, 0, sort);
     }
 
-    public Optional<List<Author>> getAuthorsList(String... fields) {
-        return getAuthorsList(0, 0, null, fields);
+    public Optional<List<Author>> getAuthors(String... fields) {
+        return getAuthors(0, 0, null, fields);
     }
 
-    public Optional<List<Author>> getAuthorsList(int size, int page) {
-        return getAuthorsList(size, page, null);
+    public Optional<List<Author>> getAuthors(int size, int page) {
+        return getAuthors(size, page, null);
     }
 
-    public Optional<List<Author>> getAuthorsList(SortOrder sort, String... fields) {
-        return getAuthorsList(0, 0, sort, fields);
+    public Optional<List<Author>> getAuthors(SortOrder sort, String... fields) {
+        return getAuthors(0, 0, sort, fields);
     }
 
-    public Optional<List<Author>> getAuthorsList(int size, int page, SortOrder sort, String... fields) {
+    public Optional<List<Author>> getAuthors(int size, int page, SortOrder sort, String... fields) {
         String parameters = (size == 0 ? "" : "size=" + size);
         parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
         parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
