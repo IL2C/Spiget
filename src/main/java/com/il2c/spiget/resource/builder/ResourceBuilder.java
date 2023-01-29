@@ -482,4 +482,8 @@ public class ResourceBuilder {
         return webBuilder.getResponse("resources/" + resourceID + "/versions/" + versionID)
                          .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Version.class));
     }
+
+    public Optional<BufferedInputStream> getResourceVersionDownload(int resourceID, int versionID) {
+        return webBuilder.getDownload("resources/" + resourceID + "/versions/" + versionID + "/download");
+    }
 }
