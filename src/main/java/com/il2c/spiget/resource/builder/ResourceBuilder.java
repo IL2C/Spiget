@@ -5,10 +5,7 @@ import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.author.response.Author;
 import com.il2c.spiget.global.SortOrder;
 import com.il2c.spiget.resource.parameter.VersionMethod;
-import com.il2c.spiget.resource.response.Resource;
-import com.il2c.spiget.resource.response.ResourcesForVersion;
-import com.il2c.spiget.resource.response.Review;
-import com.il2c.spiget.resource.response.Update;
+import com.il2c.spiget.resource.response.*;
 import com.il2c.spiget.web.builder.WebBuilder;
 
 import java.io.BufferedInputStream;
@@ -461,5 +458,50 @@ public class ResourceBuilder {
 
         return jsonElement != null ? Optional.of(webBuilder.getGson().fromJson(jsonElement, Update.class)) :
                Optional.empty();
+    }
+
+    public Optional<List<Version>> getResourceVersions(int id) {
+        return getResourceVersions(id, 0, 0, null);
+    }
+
+    public Optional<List<Version>> getResourceVersions(int id, SortOrder sort) {
+        return getResourceVersions(id, 0, 0, sort);
+    }
+
+    public Optional<List<Version>> getResourceVersions(int id, String... fields) {
+        return getResourceVersions(id, 0, 0, null, fields);
+    }
+
+    public Optional<List<Version>> getResourceVersions(int id, int size, int page) {
+        return getResourceVersions(id, size, page, null);
+    }
+
+    public Optional<List<Version>> getResourceVersions(int id, SortOrder sort, String... fields) {
+        return getResourceVersions(id, 0, 0, sort, fields);
+    }
+
+    public Optional<List<Version>> getResourceVersions(int id, int size, int page, SortOrder sort,
+                                                       String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement =
+                webBuilder.getResponse("resources/" + id + "/versions" + parameters).orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Version> versionList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList().forEach(
+                version -> versionList.add(webBuilder.getGson().fromJson(version, Version.class)));
+
+        return Optional.of(versionList);
     }
 }
