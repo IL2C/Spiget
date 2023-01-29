@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.author.response.Author;
 import com.il2c.spiget.global.SortOrder;
+import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.search.parameter.SearchQueryField;
 import com.il2c.spiget.web.builder.WebBuilder;
 
@@ -93,5 +94,76 @@ public class SearchBuilder {
                    .forEach(author -> authorList.add(webBuilder.getGson().fromJson(author, Author.class)));
 
         return Optional.of(authorList);
+    }
+
+    public Optional<List<Resource>> getResources(String query) {
+        return getResources(query, null, 0, 0, null);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SearchQueryField field) {
+        return getResources(query, field, 0, 0, null);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SortOrder sort) {
+        return getResources(query, null, 0, 0, sort);
+    }
+
+    public Optional<List<Resource>> getResources(String query, String... fields) {
+        return getResources(query, null, 0, 0, null, fields);
+    }
+
+    public Optional<List<Resource>> getResources(String query, int size, int page) {
+        return getResources(query, null, size, page, null);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SearchQueryField field, SortOrder sort) {
+        return getResources(query, field, 0, 0, sort);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SearchQueryField field, String... fields) {
+        return getResources(query, field, 0, 0, null, fields);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SortOrder sort, String... fields) {
+        return getResources(query, null, 0, 0, sort, fields);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SearchQueryField field, int size, int page) {
+        return getResources(query, field, size, page, null);
+    }
+
+    public Optional<List<Resource>> getResources(String query, int size, int page, String... fields) {
+        return getResources(query, null, size, page, null);
+    }
+
+    public Optional<List<Resource>> getResources(String query, SearchQueryField field, int size, int page,
+                                                 SortOrder sort, String... fields) {
+        if (query == null || query.isEmpty() || query.replaceAll("\\s+", "").isEmpty()) {
+            return Optional.empty();
+        }
+
+        String parameters = (field == null ? "" : "field=" + field.getName());
+        parameters += (size == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement = webBuilder.getResponse(
+                                                    "search/resources/" + URLEncoder.encode(query, StandardCharsets.UTF_8) + parameters)
+                                            .orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Resource> resourceList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList().forEach(
+                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+
+        return Optional.of(resourceList);
     }
 }
