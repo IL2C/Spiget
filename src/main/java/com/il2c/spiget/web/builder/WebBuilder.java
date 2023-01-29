@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -41,6 +42,28 @@ public class WebBuilder {
 
             if (response.statusCode() == 200) {
                 return Optional.of(JsonParser.parseString(response.body()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<BufferedInputStream> getDownload(String endpoint) {
+        try {
+            Connection connection =
+                    Jsoup.connect("https://api.spiget.org/v2/" + endpoint).method(Connection.Method.GET)
+                         .ignoreHttpErrors(true).ignoreContentType(true);
+
+            if (userAgent != null) {
+                connection.userAgent(userAgent);
+            }
+
+            Connection.Response response = connection.execute();
+
+            if (response.statusCode() == 0) {
+                return Optional.of(response.bodyStream());
             }
         } catch (IOException e) {
             e.printStackTrace();

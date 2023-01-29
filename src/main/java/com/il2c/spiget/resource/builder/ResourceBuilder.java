@@ -2,12 +2,16 @@ package com.il2c.spiget.resource.builder;
 
 import com.google.gson.JsonElement;
 import com.il2c.spiget.SpigetAPI;
+import com.il2c.spiget.author.response.Author;
 import com.il2c.spiget.global.SortOrder;
 import com.il2c.spiget.resource.parameter.VersionMethod;
 import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.resource.response.ResourcesForVersion;
+import com.il2c.spiget.resource.response.Review;
+import com.il2c.spiget.resource.response.Update;
 import com.il2c.spiget.web.builder.WebBuilder;
 
+import java.io.BufferedInputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -316,5 +320,109 @@ public class ResourceBuilder {
                 resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
 
         return Optional.of(resourceList);
+    }
+
+    public Optional<Resource> getResource(int id) {
+        return webBuilder.getResponse("resources/" + id)
+                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Resource.class));
+    }
+
+    public Optional<Author> getResourceAuthor(int id) {
+        return webBuilder.getResponse("resources/" + id + "/author")
+                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Author.class));
+    }
+
+    public Optional<BufferedInputStream> getResourceDownload(int id) {
+        return webBuilder.getDownload("resources/" + id + "/download");
+    }
+
+    public Optional<List<Review>> getResourceReviews(int id) {
+        return getResourceReviews(id, 0, 0, null);
+    }
+
+    public Optional<List<Review>> getResourceReviews(int id, SortOrder sort) {
+        return getResourceReviews(id, 0, 0, sort);
+    }
+
+    public Optional<List<Review>> getResourceReviews(int id, String... fields) {
+        return getResourceReviews(id, 0, 0, null, fields);
+    }
+
+    public Optional<List<Review>> getResourceReviews(int id, int size, int page) {
+        return getResourceReviews(id, size, page, null);
+    }
+
+    public Optional<List<Review>> getResourceReviews(int id, SortOrder sort, String... fields) {
+        return getResourceReviews(id, 0, 0, sort, fields);
+    }
+
+    public Optional<List<Review>> getResourceReviews(int id, int size, int page, SortOrder sort,
+                                                     String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement =
+                webBuilder.getResponse("resources/" + id + "/reviews" + parameters).orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Review> reviewList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList()
+                   .forEach(review -> reviewList.add(webBuilder.getGson().fromJson(review, Review.class)));
+
+        return Optional.of(reviewList);
+    }
+
+    public Optional<List<Update>> getResourceUpdates(int id) {
+        return getResourceUpdates(id, 0, 0, null);
+    }
+
+    public Optional<List<Update>> getResourceUpdates(int id, SortOrder sort) {
+        return getResourceUpdates(id, 0, 0, sort);
+    }
+
+    public Optional<List<Update>> getResourceUpdates(int id, String... fields) {
+        return getResourceUpdates(id, 0, 0, null, fields);
+    }
+
+    public Optional<List<Update>> getResourceUpdates(int id, int size, int page) {
+        return getResourceUpdates(id, size, page, null);
+    }
+
+    public Optional<List<Update>> getResourceUpdates(int id, SortOrder sort, String... fields) {
+        return getResourceUpdates(id, 0, 0, sort, fields);
+    }
+
+    public Optional<List<Update>> getResourceUpdates(int id, int size, int page, SortOrder sort,
+                                                     String... fields) {
+        String parameters = (size == 0 ? "" : "size=" + size);
+        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
+        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
+        parameters += (fields == null || fields.length == 0 ? "" :
+                       (parameters.isEmpty() ? "" : "&") + "fields=" +
+                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
+        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+
+        JsonElement jsonElement =
+                webBuilder.getResponse("resources/" + id + "/updates" + parameters).orElse(null);
+
+        if (jsonElement == null) {
+            return Optional.empty();
+        }
+
+        List<Update> updateList = new ArrayList<>();
+
+        jsonElement.getAsJsonArray().asList()
+                   .forEach(review -> updateList.add(webBuilder.getGson().fromJson(review, Update.class)));
+
+        return Optional.of(updateList);
     }
 }
