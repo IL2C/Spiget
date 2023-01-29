@@ -1,4 +1,4 @@
-package com.il2c.spiget.web;
+package com.il2c.spiget.web.builder;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
