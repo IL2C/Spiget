@@ -1,12 +1,11 @@
 package com.il2c.spiget.author.builder;
 
-import com.google.gson.JsonElement;
-import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.author.response.Author;
 import com.il2c.spiget.global.SortOrder;
 import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.resource.response.Review;
-import com.il2c.spiget.web.builder.WebBuilder;
+import com.il2c.spiget.response.builder.ResponseBuilder;
+import com.il2c.spiget.response.parameter.Parameter;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -16,10 +15,10 @@ import java.util.Optional;
 
 public class AuthorBuilder {
 
-    private final WebBuilder webBuilder;
+    private final ResponseBuilder responseBuilder;
 
-    public AuthorBuilder(SpigetAPI api) {
-        this.webBuilder = api.getWebBuilder();
+    public AuthorBuilder(ResponseBuilder responseBuilder) {
+        this.responseBuilder = responseBuilder;
     }
 
     public Optional<List<Author>> getAuthors() {
@@ -43,31 +42,25 @@ public class AuthorBuilder {
     }
 
     public Optional<List<Author>> getAuthors(int size, int page, SortOrder sort, String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList = responseBuilder.getResponseWithParametersAsList("authors", Author.class,
+                new Parameter("size", size), new Parameter("page", page),
+                new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
+                        null));
 
-        JsonElement jsonElement = webBuilder.getResponse("authors" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Author> authorList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList()
-                   .forEach(author -> authorList.add(webBuilder.getGson().fromJson(author, Author.class)));
+        responseList.forEach(object -> authorList.add((Author) object));
 
         return Optional.of(authorList);
     }
 
     public Optional<Author> getAuthor(int id) {
-        return webBuilder.getResponse("authors/" + id)
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Author.class));
+        return Optional.ofNullable(
+                (Author) responseBuilder.getResponseWithoutParameters("authors/" + id, Author.class));
     }
 
     public Optional<List<Resource>> getAuthorResources(int id) {
@@ -92,27 +85,21 @@ public class AuthorBuilder {
 
     public Optional<List<Resource>> getAuthorResources(int id, int size, int page, SortOrder sort,
                                                        String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("authors/" + id + "/resources",
+                        Resource.class, new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement =
-                webBuilder.getResponse("authors/" + id + "/resources" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
-        List<Resource> resourcesList = new ArrayList<>();
+        List<Resource> resourceList = new ArrayList<>();
+        responseList.forEach(object -> resourceList.add((Resource) object));
 
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourcesList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
-
-        return Optional.of(resourcesList);
+        return Optional.of(resourceList);
     }
 
     public Optional<List<Review>> getAuthorReviews(int id) {
@@ -137,25 +124,19 @@ public class AuthorBuilder {
 
     public Optional<List<Review>> getAuthorReviews(int id, int size, int page, SortOrder sort,
                                                    String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("authors/" + id + "/reviews", Review.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement =
-                webBuilder.getResponse("authors/" + id + "/reviews" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Review> reviewList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList()
-                   .forEach(review -> reviewList.add(webBuilder.getGson().fromJson(review, Review.class)));
+        responseList.forEach(object -> reviewList.add((Review) object));
 
         return Optional.of(reviewList);
     }

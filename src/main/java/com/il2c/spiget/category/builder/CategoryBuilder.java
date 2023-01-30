@@ -1,11 +1,10 @@
 package com.il2c.spiget.category.builder;
 
-import com.google.gson.JsonElement;
-import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.category.response.Category;
 import com.il2c.spiget.global.SortOrder;
 import com.il2c.spiget.resource.response.Resource;
-import com.il2c.spiget.web.builder.WebBuilder;
+import com.il2c.spiget.response.builder.ResponseBuilder;
+import com.il2c.spiget.response.parameter.Parameter;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -15,10 +14,10 @@ import java.util.Optional;
 
 public class CategoryBuilder {
 
-    private final WebBuilder webBuilder;
+    private final ResponseBuilder responseBuilder;
 
-    public CategoryBuilder(SpigetAPI api) {
-        this.webBuilder = api.getWebBuilder();
+    public CategoryBuilder(ResponseBuilder responseBuilder) {
+        this.responseBuilder = responseBuilder;
     }
 
     public Optional<List<Category>> getCategories() {
@@ -42,31 +41,26 @@ public class CategoryBuilder {
     }
 
     public Optional<List<Category>> getCategories(int size, int page, SortOrder sort, String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("categories", Category.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement = webBuilder.getResponse("categories" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Category> categoriesList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                category -> categoriesList.add(webBuilder.getGson().fromJson(category, Category.class)));
+        responseList.forEach(object -> categoriesList.add((Category) object));
 
         return Optional.of(categoriesList);
     }
 
     public Optional<Category> getCategory(int id) {
-        return webBuilder.getResponse("categories/" + id)
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Category.class));
+        return Optional.ofNullable(
+                (Category) responseBuilder.getResponseWithoutParameters("categories/" + id, Category.class));
     }
 
     public Optional<List<Resource>> getCategoryResources(int id) {
@@ -91,25 +85,19 @@ public class CategoryBuilder {
 
     public Optional<List<Resource>> getCategoryResources(int id, int size, int page, SortOrder sort,
                                                          String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("categories/" + id + "/resources",
+                        Resource.class, new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement =
-                webBuilder.getResponse("categories/" + id + "/resources" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Resource> resourcesList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourcesList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+        responseList.forEach(object -> resourcesList.add((Resource) object));
 
         return Optional.of(resourcesList);
     }

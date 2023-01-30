@@ -1,12 +1,11 @@
 package com.il2c.spiget.resource.builder;
 
-import com.google.gson.JsonElement;
-import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.author.response.Author;
 import com.il2c.spiget.global.SortOrder;
 import com.il2c.spiget.resource.parameter.VersionMethod;
 import com.il2c.spiget.resource.response.*;
-import com.il2c.spiget.web.builder.WebBuilder;
+import com.il2c.spiget.response.builder.ResponseBuilder;
+import com.il2c.spiget.response.parameter.Parameter;
 
 import java.io.BufferedInputStream;
 import java.net.URLEncoder;
@@ -17,10 +16,10 @@ import java.util.Optional;
 
 public class ResourceBuilder {
 
-    private final WebBuilder webBuilder;
+    private final ResponseBuilder responseBuilder;
 
-    public ResourceBuilder(SpigetAPI api) {
-        this.webBuilder = api.getWebBuilder();
+    public ResourceBuilder(ResponseBuilder responseBuilder) {
+        this.responseBuilder = responseBuilder;
     }
 
     public Optional<List<Resource>> getResources() {
@@ -44,24 +43,19 @@ public class ResourceBuilder {
     }
 
     public Optional<List<Resource>> getResources(int size, int page, SortOrder sort, String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources", Resource.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement = webBuilder.getResponse("resources" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Resource> resourceList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+        responseList.forEach(object -> resourceList.add((Resource) object));
 
         return Optional.of(resourceList);
     }
@@ -165,28 +159,21 @@ public class ResourceBuilder {
     }
 
     public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, VersionMethod method,
-                                                                int size,
-                                                                int page, SortOrder sort, String... fields) {
+                                                                int size, int page, SortOrder sort,
+                                                                String... fields) {
         if (versions == null || versions.length == 0) {
             return Optional.empty();
         }
 
-        String parameters = (method == null ? "" : "method=" + method.getName());
-        parameters += (size == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        Object responseObject = responseBuilder.getResponseWithParametersAsList(
+                "resources/for/" + URLEncoder.encode(String.join(",", versions), StandardCharsets.UTF_8),
+                ResourcesForVersion.class, new Parameter("method", method != null ? method.getName() : null),
+                new Parameter("size", size), new Parameter("page", page),
+                new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
+                        null));
 
-        JsonElement jsonElement = webBuilder.getResponse(
-                "resources/for/" + URLEncoder.encode(String.join(",", versions), StandardCharsets.UTF_8) +
-                parameters).orElse(null);
-
-        return jsonElement != null ?
-               Optional.of(webBuilder.getGson().fromJson(jsonElement, ResourcesForVersion.class)) :
-               Optional.empty();
+        return Optional.ofNullable((ResourcesForVersion) responseObject);
     }
 
     public Optional<List<Resource>> getFreeResources() {
@@ -210,24 +197,19 @@ public class ResourceBuilder {
     }
 
     public Optional<List<Resource>> getFreeResources(int size, int page, SortOrder sort, String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources/free", Resource.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement = webBuilder.getResponse("resources/free" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Resource> resourceList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+        responseList.forEach(object -> resourceList.add((Resource) object));
 
         return Optional.of(resourceList);
     }
@@ -253,24 +235,19 @@ public class ResourceBuilder {
     }
 
     public Optional<List<Resource>> getNewResources(int size, int page, SortOrder sort, String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources/new", Resource.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement = webBuilder.getResponse("resources/new" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Resource> resourceList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+        responseList.forEach(object -> resourceList.add((Resource) object));
 
         return Optional.of(resourceList);
     }
@@ -297,40 +274,36 @@ public class ResourceBuilder {
 
     public Optional<List<Resource>> getPremiumResources(int size, int page, SortOrder sort,
                                                         String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources/premium", Resource.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement = webBuilder.getResponse("resources/premium" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Resource> resourceList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+        responseList.forEach(object -> resourceList.add((Resource) object));
 
         return Optional.of(resourceList);
     }
 
     public Optional<Resource> getResource(int id) {
-        return webBuilder.getResponse("resources/" + id)
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Resource.class));
+        return Optional.ofNullable(
+                (Resource) responseBuilder.getResponseWithoutParameters("resources/" + id, Resource.class));
     }
 
     public Optional<Author> getResourceAuthor(int id) {
-        return webBuilder.getResponse("resources/" + id + "/author")
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Author.class));
+        return Optional.ofNullable(
+                (Author) responseBuilder.getResponseWithoutParameters("resources/" + id + "/author",
+                        Author.class));
     }
 
     public Optional<BufferedInputStream> getResourceDownload(int id) {
-        return webBuilder.getDownload("resources/" + id + "/download");
+        return Optional.ofNullable(responseBuilder.getResponseForDownload("resources/" + id + "/download"));
     }
 
     public Optional<List<Review>> getResourceReviews(int id) {
@@ -355,25 +328,19 @@ public class ResourceBuilder {
 
     public Optional<List<Review>> getResourceReviews(int id, int size, int page, SortOrder sort,
                                                      String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources/" + id + "/reviews", Review.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement =
-                webBuilder.getResponse("resources/" + id + "/reviews" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Review> reviewList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList()
-                   .forEach(review -> reviewList.add(webBuilder.getGson().fromJson(review, Review.class)));
+        responseList.forEach(object -> reviewList.add((Review) object));
 
         return Optional.of(reviewList);
     }
@@ -400,32 +367,27 @@ public class ResourceBuilder {
 
     public Optional<List<Update>> getResourceUpdates(int id, int size, int page, SortOrder sort,
                                                      String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources/" + id + "/updates", Update.class,
+                        new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement =
-                webBuilder.getResponse("resources/" + id + "/updates" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Update> updateList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList()
-                   .forEach(review -> updateList.add(webBuilder.getGson().fromJson(review, Update.class)));
+        responseList.forEach(object -> updateList.add((Update) object));
 
         return Optional.of(updateList);
     }
 
     public Optional<Update> getLatestResourceUpdate(int id) {
-        return webBuilder.getResponse("resources/" + id + "/updates/latest")
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Update.class));
+        return Optional.ofNullable(
+                (Update) responseBuilder.getResponseWithoutParameters("resources/" + id + "/updates/latest",
+                        Update.class));
     }
 
     public Optional<List<Version>> getResourceVersions(int id) {
@@ -450,40 +412,36 @@ public class ResourceBuilder {
 
     public Optional<List<Version>> getResourceVersions(int id, int size, int page, SortOrder sort,
                                                        String... fields) {
-        String parameters = (size == 0 ? "" : "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList =
+                responseBuilder.getResponseWithParametersAsList("resources/" + id + "/versions",
+                        Version.class, new Parameter("size", size), new Parameter("page", page),
+                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
+                                fields != null ?
+                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
 
-        JsonElement jsonElement =
-                webBuilder.getResponse("resources/" + id + "/versions" + parameters).orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Version> versionList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                version -> versionList.add(webBuilder.getGson().fromJson(version, Version.class)));
+        responseList.forEach(object -> versionList.add((Version) object));
 
         return Optional.of(versionList);
     }
 
     public Optional<Version> getLatestResourceVersion(int id) {
-        return webBuilder.getResponse("resources/" + id + "/versions/latest")
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Version.class));
+        return Optional.ofNullable(
+                (Version) responseBuilder.getResponseWithoutParameters("resources/" + id + "/versions/latest",
+                        Version.class));
     }
 
     public Optional<Version> getResourceVersion(int resourceID, int versionID) {
-        return webBuilder.getResponse("resources/" + resourceID + "/versions/" + versionID)
-                         .map(jsonElement -> webBuilder.getGson().fromJson(jsonElement, Version.class));
+        return Optional.ofNullable((Version) responseBuilder.getResponseWithoutParameters(
+                "resources/" + resourceID + "/versions/" + versionID, Version.class));
     }
 
     public Optional<BufferedInputStream> getResourceVersionDownload(int resourceID, int versionID) {
-        return webBuilder.getDownload("resources/" + resourceID + "/versions/" + versionID + "/download");
+        return Optional.ofNullable(responseBuilder.getResponseForDownload(
+                "resources/" + resourceID + "/versions/" + versionID + "/download"));
     }
 }

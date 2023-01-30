@@ -1,12 +1,11 @@
 package com.il2c.spiget.search.builder;
 
-import com.google.gson.JsonElement;
-import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.author.response.Author;
 import com.il2c.spiget.global.SortOrder;
 import com.il2c.spiget.resource.response.Resource;
+import com.il2c.spiget.response.builder.ResponseBuilder;
+import com.il2c.spiget.response.parameter.Parameter;
 import com.il2c.spiget.search.parameter.SearchQueryField;
-import com.il2c.spiget.web.builder.WebBuilder;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -16,10 +15,10 @@ import java.util.Optional;
 
 public class SearchBuilder {
 
-    private final WebBuilder webBuilder;
+    private final ResponseBuilder responseBuilder;
 
-    public SearchBuilder(SpigetAPI api) {
-        this.webBuilder = api.getWebBuilder();
+    public SearchBuilder(ResponseBuilder responseBuilder) {
+        this.responseBuilder = responseBuilder;
     }
 
     public Optional<List<Author>> getAuthors(String query) {
@@ -42,13 +41,11 @@ public class SearchBuilder {
         return getAuthors(query, null, size, page, null);
     }
 
-    public Optional<List<Author>> getAuthors(String query, SearchQueryField field,
-                                             SortOrder sort) {
+    public Optional<List<Author>> getAuthors(String query, SearchQueryField field, SortOrder sort) {
         return getAuthors(query, field, 0, 0, sort);
     }
 
-    public Optional<List<Author>> getAuthors(String query, SearchQueryField field,
-                                             String... fields) {
+    public Optional<List<Author>> getAuthors(String query, SearchQueryField field, String... fields) {
         return getAuthors(query, field, 0, 0, null, fields);
     }
 
@@ -56,8 +53,7 @@ public class SearchBuilder {
         return getAuthors(query, null, 0, 0, sort, fields);
     }
 
-    public Optional<List<Author>> getAuthors(String query, SearchQueryField field, int size,
-                                             int page) {
+    public Optional<List<Author>> getAuthors(String query, SearchQueryField field, int size, int page) {
         return getAuthors(query, field, size, page, null);
     }
 
@@ -67,31 +63,24 @@ public class SearchBuilder {
 
     public Optional<List<Author>> getAuthors(String query, SearchQueryField field, int size, int page,
                                              SortOrder sort, String... fields) {
-        if (query == null || query.isEmpty() || query.replaceAll("\\s+", "").isEmpty()) {
+        if (isQueryInvalid(query)) {
             return Optional.empty();
         }
 
-        String parameters = (field == null ? "" : "field=" + field.getName());
-        parameters += (size == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList = responseBuilder.getResponseWithParametersAsList(
+                "search/authors/" + URLEncoder.encode(query, StandardCharsets.UTF_8), Author.class,
+                new Parameter("field", field != null ? field.getName() : null), new Parameter("size", size),
+                new Parameter("page", page), new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("fields",
+                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
+                        null));
 
-        JsonElement jsonElement = webBuilder.getResponse(
-                                                    "search/authors/" + URLEncoder.encode(query, StandardCharsets.UTF_8) + parameters)
-                                            .orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Author> authorList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList()
-                   .forEach(author -> authorList.add(webBuilder.getGson().fromJson(author, Author.class)));
+        responseList.forEach(object -> authorList.add((Author) object));
 
         return Optional.of(authorList);
     }
@@ -138,32 +127,29 @@ public class SearchBuilder {
 
     public Optional<List<Resource>> getResources(String query, SearchQueryField field, int size, int page,
                                                  SortOrder sort, String... fields) {
-        if (query == null || query.isEmpty() || query.replaceAll("\\s+", "").isEmpty()) {
+        if (isQueryInvalid(query)) {
             return Optional.empty();
         }
 
-        String parameters = (field == null ? "" : "field=" + field.getName());
-        parameters += (size == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "size=" + size);
-        parameters += (page == 0 ? "" : (parameters.isEmpty() ? "" : "&") + "page=" + page);
-        parameters += (sort == null ? "" : (parameters.isEmpty() ? "" : "&") + "sort=" + sort.getCode());
-        parameters += (fields == null || fields.length == 0 ? "" :
-                       (parameters.isEmpty() ? "" : "&") + "fields=" +
-                       URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8));
-        parameters = parameters.isEmpty() ? "" : "?" + parameters;
+        List<Object> responseList = responseBuilder.getResponseWithParametersAsList(
+                "search/resources/" + URLEncoder.encode(query, StandardCharsets.UTF_8), Resource.class,
+                new Parameter("field", field != null ? field.getName() : null), new Parameter("size", size),
+                new Parameter("page", page), new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("fields",
+                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
+                        null));
 
-        JsonElement jsonElement = webBuilder.getResponse(
-                                                    "search/resources/" + URLEncoder.encode(query, StandardCharsets.UTF_8) + parameters)
-                                            .orElse(null);
-
-        if (jsonElement == null) {
+        if (responseList == null) {
             return Optional.empty();
         }
 
         List<Resource> resourceList = new ArrayList<>();
-
-        jsonElement.getAsJsonArray().asList().forEach(
-                resource -> resourceList.add(webBuilder.getGson().fromJson(resource, Resource.class)));
+        responseList.forEach(object -> resourceList.add((Resource) object));
 
         return Optional.of(resourceList);
+    }
+
+    private boolean isQueryInvalid(String query) {
+        return query == null || query.isEmpty() || query.replaceAll("\\s+", "").isEmpty();
     }
 }

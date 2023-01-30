@@ -1,27 +1,26 @@
 package com.il2c.spiget.api.builder;
 
-import com.il2c.spiget.SpigetAPI;
 import com.il2c.spiget.api.reponse.Stats;
 import com.il2c.spiget.api.reponse.Status;
-import com.il2c.spiget.web.builder.WebBuilder;
+import com.il2c.spiget.response.builder.ResponseBuilder;
 
 import java.util.Optional;
 
 public class APIBuilder {
 
-    private final WebBuilder webBuilder;
+    private final ResponseBuilder responseBuilder;
 
-    public APIBuilder(SpigetAPI api) {
-        this.webBuilder = api.getWebBuilder();
+    public APIBuilder(ResponseBuilder responseBuilder) {
+        this.responseBuilder = responseBuilder;
     }
 
     public Optional<Status> getStatus() {
-        return webBuilder.getResponse("status").map(jsonElement -> webBuilder.getGson().fromJson(
-                jsonElement.getAsJsonObject().get("status"), Status.class));
+        return Optional.ofNullable(
+                (Status) responseBuilder.getResponseWithoutParameters("status", Status.class, "status"));
     }
 
     public Optional<Stats> getStats() {
-        return webBuilder.getResponse("status").map(jsonElement -> webBuilder.getGson().fromJson(
-                jsonElement.getAsJsonObject().get("stats"), Stats.class));
+        return Optional.ofNullable(
+                (Stats) responseBuilder.getResponseWithoutParameters("status", Stats.class, "stats"));
     }
 }
