@@ -11,6 +11,8 @@ import org.jsoup.Jsoup;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +80,7 @@ public class ResponseBuilder {
                 parametersRaw.append(parametersRaw.length() != 1 ? "&" : "")
                              .append(parameter.getKey())
                              .append("=")
-                             .append(value);
+                             .append(URLEncoder.encode("" + value, StandardCharsets.UTF_8));
             }
         }
 

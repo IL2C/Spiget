@@ -71,9 +71,7 @@ public class SearchBuilder {
                 "search/authors/" + URLEncoder.encode(query, StandardCharsets.UTF_8), Author.class,
                 new Parameter("field", field != null ? field.getName() : null), new Parameter("size", size),
                 new Parameter("page", page), new Parameter("sort", sort != null ? sort.getCode() : null),
-                new Parameter("fields",
-                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
-                        null));
+                new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -135,9 +133,7 @@ public class SearchBuilder {
                 "search/resources/" + URLEncoder.encode(query, StandardCharsets.UTF_8), Resource.class,
                 new Parameter("field", field != null ? field.getName() : null), new Parameter("size", size),
                 new Parameter("page", page), new Parameter("sort", sort != null ? sort.getCode() : null),
-                new Parameter("fields",
-                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
-                        null));
+                new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();

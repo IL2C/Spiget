@@ -46,9 +46,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -169,9 +168,8 @@ public class ResourceBuilder {
                 "resources/for/" + URLEncoder.encode(String.join(",", versions), StandardCharsets.UTF_8),
                 ResourcesForVersion.class, new Parameter("method", method != null ? method.getName() : null),
                 new Parameter("size", size), new Parameter("page", page),
-                new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                        fields != null ? URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) :
-                        null));
+                new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         return Optional.ofNullable((ResourcesForVersion) responseObject);
     }
@@ -200,9 +198,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/free", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -238,9 +235,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/new", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -277,9 +273,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/premium", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -331,9 +326,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/" + id + "/reviews", Review.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -370,9 +364,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/" + id + "/updates", Update.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -415,9 +408,8 @@ public class ResourceBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/" + id + "/versions",
                         Version.class, new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();

@@ -6,8 +6,6 @@ import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.response.builder.ResponseBuilder;
 import com.il2c.spiget.response.parameter.Parameter;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,9 +42,8 @@ public class CategoryBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("categories", Category.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
@@ -88,9 +85,8 @@ public class CategoryBuilder {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("categories/" + id + "/resources",
                         Resource.class, new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null), new Parameter("fields",
-                                fields != null ?
-                                URLEncoder.encode(String.join(",", fields), StandardCharsets.UTF_8) : null));
+                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
             return Optional.empty();
