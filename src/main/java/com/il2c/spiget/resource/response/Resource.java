@@ -7,6 +7,7 @@ public class Resource {
     private boolean external;
     private File file;
     private String contributors;
+    private String description;
     private int likes;
     private String[] testedVersions;
     private Links links;
@@ -36,6 +37,10 @@ public class Resource {
 
     public String getContributors() {
         return contributors;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public int getLikes() {
