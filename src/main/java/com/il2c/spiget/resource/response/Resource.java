@@ -1,5 +1,6 @@
 package com.il2c.spiget.resource.response;
 
+import java.util.Base64;
 import java.util.UUID;
 
 public class Resource {
@@ -40,7 +41,7 @@ public class Resource {
     }
 
     public String getDescription() {
-        return description;
+        return description != null ? new String(Base64.getDecoder().decode(description)) : null;
     }
 
     public int getLikes() {

@@ -1,5 +1,7 @@
 package com.il2c.spiget.resource.response;
 
+import java.util.Base64;
+
 public class Review {
 
     private Author author;
@@ -20,7 +22,7 @@ public class Review {
     }
 
     public String getMessage() {
-        return message;
+        return message != null ? new String(Base64.getDecoder().decode(message)) : null;
     }
 
     public String getVersion() {
@@ -32,7 +34,7 @@ public class Review {
     }
 
     public String getResponseMessage() {
-        return responseMessage;
+        return responseMessage != null ? new String(Base64.getDecoder().decode(responseMessage)) : null;
     }
 
     public int getResource() {
