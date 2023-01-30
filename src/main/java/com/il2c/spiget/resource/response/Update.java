@@ -1,5 +1,7 @@
 package com.il2c.spiget.resource.response;
 
+import java.util.Base64;
+
 public class Update {
 
     private String title;
@@ -14,7 +16,7 @@ public class Update {
     }
 
     public String getDescription() {
-        return description;
+        return description != null ? new String(Base64.getDecoder().decode(description)) : null;
     }
 
     public long getDate() {
