@@ -1,7 +1,7 @@
 package com.il2c.spiget.search.builder;
 
 import com.il2c.spiget.author.response.Author;
-import com.il2c.spiget.global.SortOrder;
+import com.il2c.spiget.global.parameter.Sort;
 import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.response.builder.ResponseBuilder;
 import com.il2c.spiget.response.parameter.Parameter;
@@ -29,7 +29,7 @@ public class SearchBuilder {
         return getAuthors(query, field, 0, 0, null);
     }
 
-    public Optional<List<Author>> getAuthors(String query, SortOrder sort) {
+    public Optional<List<Author>> getAuthors(String query, Sort sort) {
         return getAuthors(query, null, 0, 0, sort);
     }
 
@@ -41,7 +41,7 @@ public class SearchBuilder {
         return getAuthors(query, null, size, page, null);
     }
 
-    public Optional<List<Author>> getAuthors(String query, SearchQueryField field, SortOrder sort) {
+    public Optional<List<Author>> getAuthors(String query, SearchQueryField field, Sort sort) {
         return getAuthors(query, field, 0, 0, sort);
     }
 
@@ -49,7 +49,7 @@ public class SearchBuilder {
         return getAuthors(query, field, 0, 0, null, fields);
     }
 
-    public Optional<List<Author>> getAuthors(String query, SortOrder sort, String... fields) {
+    public Optional<List<Author>> getAuthors(String query, Sort sort, String... fields) {
         return getAuthors(query, null, 0, 0, sort, fields);
     }
 
@@ -62,7 +62,7 @@ public class SearchBuilder {
     }
 
     public Optional<List<Author>> getAuthors(String query, SearchQueryField field, int size, int page,
-                                             SortOrder sort, String... fields) {
+                                             Sort sort, String... fields) {
         if (isQueryInvalid(query)) {
             return Optional.empty();
         }
@@ -70,7 +70,7 @@ public class SearchBuilder {
         List<Object> responseList = responseBuilder.getResponseWithParametersAsList(
                 "search/authors/" + URLEncoder.encode(query, StandardCharsets.UTF_8), Author.class,
                 new Parameter("field", field != null ? field.getName() : null), new Parameter("size", size),
-                new Parameter("page", page), new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("page", page), new Parameter("sort", sort != null ? sort.toString() : null),
                 new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -91,7 +91,7 @@ public class SearchBuilder {
         return getResources(query, field, 0, 0, null);
     }
 
-    public Optional<List<Resource>> getResources(String query, SortOrder sort) {
+    public Optional<List<Resource>> getResources(String query, Sort sort) {
         return getResources(query, null, 0, 0, sort);
     }
 
@@ -103,7 +103,7 @@ public class SearchBuilder {
         return getResources(query, null, size, page, null);
     }
 
-    public Optional<List<Resource>> getResources(String query, SearchQueryField field, SortOrder sort) {
+    public Optional<List<Resource>> getResources(String query, SearchQueryField field, Sort sort) {
         return getResources(query, field, 0, 0, sort);
     }
 
@@ -111,7 +111,7 @@ public class SearchBuilder {
         return getResources(query, field, 0, 0, null, fields);
     }
 
-    public Optional<List<Resource>> getResources(String query, SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getResources(String query, Sort sort, String... fields) {
         return getResources(query, null, 0, 0, sort, fields);
     }
 
@@ -124,7 +124,7 @@ public class SearchBuilder {
     }
 
     public Optional<List<Resource>> getResources(String query, SearchQueryField field, int size, int page,
-                                                 SortOrder sort, String... fields) {
+                                                 Sort sort, String... fields) {
         if (isQueryInvalid(query)) {
             return Optional.empty();
         }
@@ -132,7 +132,7 @@ public class SearchBuilder {
         List<Object> responseList = responseBuilder.getResponseWithParametersAsList(
                 "search/resources/" + URLEncoder.encode(query, StandardCharsets.UTF_8), Resource.class,
                 new Parameter("field", field != null ? field.getName() : null), new Parameter("size", size),
-                new Parameter("page", page), new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("page", page), new Parameter("sort", sort != null ? sort.toString() : null),
                 new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {

@@ -1,7 +1,7 @@
 package com.il2c.spiget.category.builder;
 
 import com.il2c.spiget.category.response.Category;
-import com.il2c.spiget.global.SortOrder;
+import com.il2c.spiget.global.parameter.Sort;
 import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.response.builder.ResponseBuilder;
 import com.il2c.spiget.response.parameter.Parameter;
@@ -22,7 +22,7 @@ public class CategoryBuilder {
         return getCategories(0, 0, null);
     }
 
-    public Optional<List<Category>> getCategories(SortOrder sort) {
+    public Optional<List<Category>> getCategories(Sort sort) {
         return getCategories(0, 0, sort);
     }
 
@@ -34,15 +34,15 @@ public class CategoryBuilder {
         return getCategories(size, page, null);
     }
 
-    public Optional<List<Category>> getCategories(SortOrder sort, String... fields) {
+    public Optional<List<Category>> getCategories(Sort sort, String... fields) {
         return getCategories(0, 0, sort, fields);
     }
 
-    public Optional<List<Category>> getCategories(int size, int page, SortOrder sort, String... fields) {
+    public Optional<List<Category>> getCategories(int size, int page, Sort sort, String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("categories", Category.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -64,7 +64,7 @@ public class CategoryBuilder {
         return getCategoryResources(id, 0, 0, null);
     }
 
-    public Optional<List<Resource>> getCategoryResources(int id, SortOrder sort) {
+    public Optional<List<Resource>> getCategoryResources(int id, Sort sort) {
         return getCategoryResources(id, 0, 0, sort);
     }
 
@@ -76,16 +76,16 @@ public class CategoryBuilder {
         return getCategoryResources(id, size, page, null);
     }
 
-    public Optional<List<Resource>> getCategoryResources(int id, SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getCategoryResources(int id, Sort sort, String... fields) {
         return getCategoryResources(id, 0, 0, sort, fields);
     }
 
-    public Optional<List<Resource>> getCategoryResources(int id, int size, int page, SortOrder sort,
+    public Optional<List<Resource>> getCategoryResources(int id, int size, int page, Sort sort,
                                                          String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("categories/" + id + "/resources",
                         Resource.class, new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {

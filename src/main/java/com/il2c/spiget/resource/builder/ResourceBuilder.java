@@ -1,7 +1,7 @@
 package com.il2c.spiget.resource.builder;
 
 import com.il2c.spiget.author.response.Author;
-import com.il2c.spiget.global.parameter.SortOrder;
+import com.il2c.spiget.global.parameter.Sort;
 import com.il2c.spiget.resource.parameter.VersionMethod;
 import com.il2c.spiget.resource.response.*;
 import com.il2c.spiget.response.builder.ResponseBuilder;
@@ -26,7 +26,7 @@ public class ResourceBuilder {
         return getResources(0, 0, null);
     }
 
-    public Optional<List<Resource>> getResources(SortOrder sort) {
+    public Optional<List<Resource>> getResources(Sort sort) {
         return getResources(0, 0, sort);
     }
 
@@ -38,15 +38,15 @@ public class ResourceBuilder {
         return getResources(size, page, null);
     }
 
-    public Optional<List<Resource>> getResources(SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getResources(Sort sort, String... fields) {
         return getResources(0, 0, sort, fields);
     }
 
-    public Optional<List<Resource>> getResources(int size, int page, SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getResources(int size, int page, Sort sort, String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -75,11 +75,11 @@ public class ResourceBuilder {
         return getResourcesForVersion(versions, method, 0, 0, null);
     }
 
-    public Optional<ResourcesForVersion> getResourcesForVersion(String version, SortOrder sort) {
+    public Optional<ResourcesForVersion> getResourcesForVersion(String version, Sort sort) {
         return getResourcesForVersion(version, null, 0, 0, sort);
     }
 
-    public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, SortOrder sort) {
+    public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, Sort sort) {
         return getResourcesForVersion(versions, null, 0, 0, sort);
     }
 
@@ -100,12 +100,12 @@ public class ResourceBuilder {
     }
 
     public Optional<ResourcesForVersion> getResourcesForVersion(String version, VersionMethod method,
-                                                                SortOrder sort) {
+                                                                Sort sort) {
         return getResourcesForVersion(version, method, 0, 0, sort);
     }
 
     public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, VersionMethod method,
-                                                                SortOrder sort) {
+                                                                Sort sort) {
         return getResourcesForVersion(versions, method, 0, 0, sort);
     }
 
@@ -119,12 +119,11 @@ public class ResourceBuilder {
         return getResourcesForVersion(versions, method, 0, 0, null, fields);
     }
 
-    public Optional<ResourcesForVersion> getResourcesForVersion(String version, SortOrder sort,
-                                                                String... fields) {
+    public Optional<ResourcesForVersion> getResourcesForVersion(String version, Sort sort, String... fields) {
         return getResourcesForVersion(version, null, 0, 0, sort, fields);
     }
 
-    public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, SortOrder sort,
+    public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, Sort sort,
                                                                 String... fields) {
         return getResourcesForVersion(versions, null, 0, 0, sort, fields);
     }
@@ -150,7 +149,7 @@ public class ResourceBuilder {
     }
 
     public Optional<ResourcesForVersion> getResourcesForVersion(String version, VersionMethod method,
-                                                                int size, int page, SortOrder sort,
+                                                                int size, int page, Sort sort,
                                                                 String... fields) {
         return getResourcesForVersion(
                 version != null && !(version.isEmpty() || version.replaceAll("\\s+", "").isEmpty()) ?
@@ -158,7 +157,7 @@ public class ResourceBuilder {
     }
 
     public Optional<ResourcesForVersion> getResourcesForVersion(String[] versions, VersionMethod method,
-                                                                int size, int page, SortOrder sort,
+                                                                int size, int page, Sort sort,
                                                                 String... fields) {
         if (versions == null || versions.length == 0) {
             return Optional.empty();
@@ -168,7 +167,7 @@ public class ResourceBuilder {
                 "resources/for/" + URLEncoder.encode(String.join(",", versions), StandardCharsets.UTF_8),
                 ResourcesForVersion.class, new Parameter("method", method != null ? method.getName() : null),
                 new Parameter("size", size), new Parameter("page", page),
-                new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("sort", sort != null ? sort.toString() : null),
                 new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         return Optional.ofNullable((ResourcesForVersion) responseObject);
@@ -178,7 +177,7 @@ public class ResourceBuilder {
         return getFreeResources(0, 0, null);
     }
 
-    public Optional<List<Resource>> getFreeResources(SortOrder sort) {
+    public Optional<List<Resource>> getFreeResources(Sort sort) {
         return getFreeResources(0, 0, sort);
     }
 
@@ -190,15 +189,15 @@ public class ResourceBuilder {
         return getFreeResources(size, page, null);
     }
 
-    public Optional<List<Resource>> getFreeResources(SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getFreeResources(Sort sort, String... fields) {
         return getFreeResources(0, 0, sort, fields);
     }
 
-    public Optional<List<Resource>> getFreeResources(int size, int page, SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getFreeResources(int size, int page, Sort sort, String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/free", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -215,7 +214,7 @@ public class ResourceBuilder {
         return getNewResources(0, 0, null);
     }
 
-    public Optional<List<Resource>> getNewResources(SortOrder sort) {
+    public Optional<List<Resource>> getNewResources(Sort sort) {
         return getNewResources(0, 0, sort);
     }
 
@@ -227,15 +226,15 @@ public class ResourceBuilder {
         return getNewResources(size, page, null);
     }
 
-    public Optional<List<Resource>> getNewResources(SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getNewResources(Sort sort, String... fields) {
         return getNewResources(0, 0, sort, fields);
     }
 
-    public Optional<List<Resource>> getNewResources(int size, int page, SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getNewResources(int size, int page, Sort sort, String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/new", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -252,7 +251,7 @@ public class ResourceBuilder {
         return getPremiumResources(0, 0, null);
     }
 
-    public Optional<List<Resource>> getPremiumResources(SortOrder sort) {
+    public Optional<List<Resource>> getPremiumResources(Sort sort) {
         return getPremiumResources(0, 0, sort);
     }
 
@@ -264,16 +263,15 @@ public class ResourceBuilder {
         return getPremiumResources(size, page, null);
     }
 
-    public Optional<List<Resource>> getPremiumResources(SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getPremiumResources(Sort sort, String... fields) {
         return getPremiumResources(0, 0, sort, fields);
     }
 
-    public Optional<List<Resource>> getPremiumResources(int size, int page, SortOrder sort,
-                                                        String... fields) {
+    public Optional<List<Resource>> getPremiumResources(int size, int page, Sort sort, String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/premium", Resource.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -305,7 +303,7 @@ public class ResourceBuilder {
         return getResourceReviews(id, 0, 0, null);
     }
 
-    public Optional<List<Review>> getResourceReviews(int id, SortOrder sort) {
+    public Optional<List<Review>> getResourceReviews(int id, Sort sort) {
         return getResourceReviews(id, 0, 0, sort);
     }
 
@@ -317,16 +315,16 @@ public class ResourceBuilder {
         return getResourceReviews(id, size, page, null);
     }
 
-    public Optional<List<Review>> getResourceReviews(int id, SortOrder sort, String... fields) {
+    public Optional<List<Review>> getResourceReviews(int id, Sort sort, String... fields) {
         return getResourceReviews(id, 0, 0, sort, fields);
     }
 
-    public Optional<List<Review>> getResourceReviews(int id, int size, int page, SortOrder sort,
+    public Optional<List<Review>> getResourceReviews(int id, int size, int page, Sort sort,
                                                      String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/" + id + "/reviews", Review.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -343,7 +341,7 @@ public class ResourceBuilder {
         return getResourceUpdates(id, 0, 0, null);
     }
 
-    public Optional<List<Update>> getResourceUpdates(int id, SortOrder sort) {
+    public Optional<List<Update>> getResourceUpdates(int id, Sort sort) {
         return getResourceUpdates(id, 0, 0, sort);
     }
 
@@ -355,16 +353,16 @@ public class ResourceBuilder {
         return getResourceUpdates(id, size, page, null);
     }
 
-    public Optional<List<Update>> getResourceUpdates(int id, SortOrder sort, String... fields) {
+    public Optional<List<Update>> getResourceUpdates(int id, Sort sort, String... fields) {
         return getResourceUpdates(id, 0, 0, sort, fields);
     }
 
-    public Optional<List<Update>> getResourceUpdates(int id, int size, int page, SortOrder sort,
+    public Optional<List<Update>> getResourceUpdates(int id, int size, int page, Sort sort,
                                                      String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/" + id + "/updates", Update.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -387,7 +385,7 @@ public class ResourceBuilder {
         return getResourceVersions(id, 0, 0, null);
     }
 
-    public Optional<List<Version>> getResourceVersions(int id, SortOrder sort) {
+    public Optional<List<Version>> getResourceVersions(int id, Sort sort) {
         return getResourceVersions(id, 0, 0, sort);
     }
 
@@ -399,16 +397,16 @@ public class ResourceBuilder {
         return getResourceVersions(id, size, page, null);
     }
 
-    public Optional<List<Version>> getResourceVersions(int id, SortOrder sort, String... fields) {
+    public Optional<List<Version>> getResourceVersions(int id, Sort sort, String... fields) {
         return getResourceVersions(id, 0, 0, sort, fields);
     }
 
-    public Optional<List<Version>> getResourceVersions(int id, int size, int page, SortOrder sort,
+    public Optional<List<Version>> getResourceVersions(int id, int size, int page, Sort sort,
                                                        String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("resources/" + id + "/versions",
                         Version.class, new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {

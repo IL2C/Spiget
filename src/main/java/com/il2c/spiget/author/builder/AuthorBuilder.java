@@ -1,7 +1,7 @@
 package com.il2c.spiget.author.builder;
 
 import com.il2c.spiget.author.response.Author;
-import com.il2c.spiget.global.SortOrder;
+import com.il2c.spiget.global.parameter.Sort;
 import com.il2c.spiget.resource.response.Resource;
 import com.il2c.spiget.resource.response.Review;
 import com.il2c.spiget.response.builder.ResponseBuilder;
@@ -23,7 +23,7 @@ public class AuthorBuilder {
         return getAuthors(0, 0, null);
     }
 
-    public Optional<List<Author>> getAuthors(SortOrder sort) {
+    public Optional<List<Author>> getAuthors(Sort sort) {
         return getAuthors(0, 0, sort);
     }
 
@@ -35,14 +35,14 @@ public class AuthorBuilder {
         return getAuthors(size, page, null);
     }
 
-    public Optional<List<Author>> getAuthors(SortOrder sort, String... fields) {
+    public Optional<List<Author>> getAuthors(Sort sort, String... fields) {
         return getAuthors(0, 0, sort, fields);
     }
 
-    public Optional<List<Author>> getAuthors(int size, int page, SortOrder sort, String... fields) {
+    public Optional<List<Author>> getAuthors(int size, int page, Sort sort, String... fields) {
         List<Object> responseList = responseBuilder.getResponseWithParametersAsList("authors", Author.class,
                 new Parameter("size", size), new Parameter("page", page),
-                new Parameter("sort", sort != null ? sort.getCode() : null),
+                new Parameter("sort", sort != null ? sort.toString() : null),
                 new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -64,7 +64,7 @@ public class AuthorBuilder {
         return getAuthorResources(id, 0, 0, null);
     }
 
-    public Optional<List<Resource>> getAuthorResources(int id, SortOrder sort) {
+    public Optional<List<Resource>> getAuthorResources(int id, Sort sort) {
         return getAuthorResources(id, 0, 0, sort);
     }
 
@@ -76,16 +76,16 @@ public class AuthorBuilder {
         return getAuthorResources(id, size, page, null);
     }
 
-    public Optional<List<Resource>> getAuthorResources(int id, SortOrder sort, String... fields) {
+    public Optional<List<Resource>> getAuthorResources(int id, Sort sort, String... fields) {
         return getAuthorResources(id, 0, 0, sort, fields);
     }
 
-    public Optional<List<Resource>> getAuthorResources(int id, int size, int page, SortOrder sort,
+    public Optional<List<Resource>> getAuthorResources(int id, int size, int page, Sort sort,
                                                        String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("authors/" + id + "/resources",
                         Resource.class, new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
@@ -102,7 +102,7 @@ public class AuthorBuilder {
         return getAuthorReviews(id, 0, 0, null);
     }
 
-    public Optional<List<Review>> getAuthorReviews(int id, SortOrder sort) {
+    public Optional<List<Review>> getAuthorReviews(int id, Sort sort) {
         return getAuthorReviews(id, 0, 0, sort);
     }
 
@@ -114,16 +114,15 @@ public class AuthorBuilder {
         return getAuthorReviews(id, size, page, null);
     }
 
-    public Optional<List<Review>> getAuthorReviews(int id, SortOrder sort, String... fields) {
+    public Optional<List<Review>> getAuthorReviews(int id, Sort sort, String... fields) {
         return getAuthorReviews(id, 0, 0, sort, fields);
     }
 
-    public Optional<List<Review>> getAuthorReviews(int id, int size, int page, SortOrder sort,
-                                                   String... fields) {
+    public Optional<List<Review>> getAuthorReviews(int id, int size, int page, Sort sort, String... fields) {
         List<Object> responseList =
                 responseBuilder.getResponseWithParametersAsList("authors/" + id + "/reviews", Review.class,
                         new Parameter("size", size), new Parameter("page", page),
-                        new Parameter("sort", sort != null ? sort.getCode() : null),
+                        new Parameter("sort", sort != null ? sort.toString() : null),
                         new Parameter("fields", fields != null ? String.join(",", fields) : null));
 
         if (responseList == null) {
