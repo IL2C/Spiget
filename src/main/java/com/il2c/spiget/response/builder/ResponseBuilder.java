@@ -3,7 +3,7 @@ package com.il2c.spiget.response.builder;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.il2c.spiget.SpigetAPI;
+import com.il2c.spiget.Spiget;
 import com.il2c.spiget.response.parameter.Parameter;
 import com.il2c.spiget.web.builder.WebBuilder;
 import org.jsoup.Connection;
@@ -21,7 +21,7 @@ public class ResponseBuilder {
     private final WebBuilder webBuilder;
     private final Gson gson;
 
-    public ResponseBuilder(SpigetAPI api) {
+    public ResponseBuilder(Spiget api) {
         webBuilder = api.getWebBuilder();
         gson = new Gson();
     }

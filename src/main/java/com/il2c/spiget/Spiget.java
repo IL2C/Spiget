@@ -8,10 +8,10 @@ import com.il2c.spiget.response.builder.ResponseBuilder;
 import com.il2c.spiget.search.builder.SearchBuilder;
 import com.il2c.spiget.web.builder.WebBuilder;
 
-public class SpigetAPI {
+public class Spiget {
 
     private final ResponseBuilder responseBuilder;
-    
+
     private WebBuilder webBuilder;
     private APIBuilder apiBuilder;
     private AuthorBuilder authorBuilder;
@@ -19,7 +19,7 @@ public class SpigetAPI {
     private ResourceBuilder resourceBuilder;
     private SearchBuilder searchBuilder;
 
-    public SpigetAPI() {
+    public Spiget() {
         this.responseBuilder = new ResponseBuilder(this);
     }
 
