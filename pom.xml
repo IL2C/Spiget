@@ -7,6 +7,7 @@
     <groupId>com.il2c</groupId>
     <artifactId>spiget</artifactId>
     <version>1.0</version>
+    <name>Spiget</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
