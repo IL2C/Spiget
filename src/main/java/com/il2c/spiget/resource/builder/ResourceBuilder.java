@@ -1,7 +1,7 @@
 package com.il2c.spiget.resource.builder;
 
 import com.il2c.spiget.author.response.Author;
-import com.il2c.spiget.global.SortOrder;
+import com.il2c.spiget.global.parameter.SortOrder;
 import com.il2c.spiget.resource.parameter.VersionMethod;
 import com.il2c.spiget.resource.response.*;
 import com.il2c.spiget.response.builder.ResponseBuilder;
@@ -164,7 +164,7 @@ public class ResourceBuilder {
             return Optional.empty();
         }
 
-        Object responseObject = responseBuilder.getResponseWithParametersAsList(
+        Object responseObject = responseBuilder.getResponseWithParametersAsObject(
                 "resources/for/" + URLEncoder.encode(String.join(",", versions), StandardCharsets.UTF_8),
                 ResourcesForVersion.class, new Parameter("method", method != null ? method.getName() : null),
                 new Parameter("size", size), new Parameter("page", page),
