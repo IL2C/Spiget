@@ -1,6 +1,22 @@
 package com.il2c.spiget.global.parameter;
 
-public record Sort(String field, Sort.Order order) {
+public class Sort {
+
+    private final String field;
+    private final Sort.Order order;
+
+    public Sort(String field, Sort.Order order) {
+        this.field = field;
+        this.order = order;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public Sort.Order getOrder() {
+        return order;
+    }
 
     @Override
     public String toString() {
