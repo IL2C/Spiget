@@ -9,7 +9,6 @@ import com.il2c.spiget.web.builder.WebBuilder;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -24,12 +23,6 @@ public class ResponseBuilder {
     public ResponseBuilder(Spiget api) {
         webBuilder = api.getWebBuilder();
         gson = new Gson();
-    }
-
-    public BufferedInputStream getResponseForDownload(String endpoint) {
-        Connection.Response response = getConnectionResponse(endpoint, 0);
-
-        return response != null ? response.bodyStream() : null;
     }
 
     public Object getResponseWithoutParameters(String endpoint, Class<?> clazz) {
@@ -88,12 +81,12 @@ public class ResponseBuilder {
     }
 
     private JsonElement getJsonElement(String endpoint) {
-        Connection.Response response = getConnectionResponse(endpoint, 200);
+        Connection.Response response = getConnectionResponse(endpoint);
 
         return response != null ? JsonParser.parseString(response.body()) : null;
     }
 
-    private Connection.Response getConnectionResponse(String endpoint, int statusCode) {
+    public Connection.Response getConnectionResponse(String endpoint) {
         try {
             Connection connection = Jsoup.connect("https://api.spiget.org/v2/" + endpoint)
                                          .method(Connection.Method.GET)
@@ -108,7 +101,7 @@ public class ResponseBuilder {
 
             Connection.Response response = connection.execute();
 
-            return response.statusCode() == statusCode ? response : null;
+            return response.statusCode() == 200 ? response : null;
         } catch (IOException e) {
             e.printStackTrace();
         }

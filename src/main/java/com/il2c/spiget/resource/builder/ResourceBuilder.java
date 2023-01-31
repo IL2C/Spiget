@@ -6,8 +6,8 @@ import com.il2c.spiget.resource.parameter.VersionMethod;
 import com.il2c.spiget.resource.response.*;
 import com.il2c.spiget.response.builder.ResponseBuilder;
 import com.il2c.spiget.response.parameter.Parameter;
+import org.jsoup.Connection;
 
-import java.io.BufferedInputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -295,8 +295,8 @@ public class ResourceBuilder {
                         Author.class));
     }
 
-    public Optional<BufferedInputStream> getResourceDownload(int id) {
-        return Optional.ofNullable(responseBuilder.getResponseForDownload("resources/" + id + "/download"));
+    public Optional<Download> getResourceDownload(int id) {
+        return Optional.ofNullable(getResourceDownload("resources/" + id + "/download"));
     }
 
     public Optional<List<Review>> getResourceReviews(int id) {
@@ -430,8 +430,20 @@ public class ResourceBuilder {
                 "resources/" + resourceID + "/versions/" + versionID, Version.class));
     }
 
-    public Optional<BufferedInputStream> getResourceVersionDownload(int resourceID, int versionID) {
-        return Optional.ofNullable(responseBuilder.getResponseForDownload(
-                "resources/" + resourceID + "/versions/" + versionID + "/download"));
+    public Optional<Download> getResourceVersionDownload(int resourceID, int versionID) {
+        return Optional.ofNullable(
+                getResourceDownload("resources/" + resourceID + "/versions/" + versionID + "/download"));
+    }
+
+    private Download getResourceDownload(String endpoint) {
+        Connection.Response response = responseBuilder.getConnectionResponse(endpoint);
+
+        if (response == null) {
+            return null;
+        }
+
+        String url = response.url().toString();
+
+        return new Download(url, url.startsWith("https://cdn.spiget.org/") ? response.bodyStream() : null);
     }
 }
