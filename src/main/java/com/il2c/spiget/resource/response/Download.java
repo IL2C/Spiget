@@ -1,6 +1,6 @@
 package com.il2c.spiget.resource.response;
 
-import java.io.BufferedInputStream;
+import java.io.*;
 
 public class Download {
 
@@ -22,5 +22,15 @@ public class Download {
 
     public boolean isExternal() {
         return bufferedInputStream == null;
+    }
+
+    public void save(File file) throws IOException {
+        if (bufferedInputStream == null) {
+            return;
+        }
+
+        OutputStream outputStream = new FileOutputStream(file, false);
+        bufferedInputStream.transferTo(outputStream);
+        outputStream.close();
     }
 }
